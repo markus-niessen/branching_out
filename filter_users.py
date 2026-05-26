@@ -1,26 +1,57 @@
+"""Filter users from a JSON file by age and print the result."""
+
 import json
 
-
-with open("users.json", "r") as file:
-    users = json.load(file)
-
-
-def filter_by_age(users, min_age):
-    return [user for user in users if user["age"] >= min_age]
+USERS_FILE = "users.json"
+MINIMUM_AGE = 30
 
 
-def filter_by_email(users, email):
-    return [user for user in users if user["email"] == email]
+def load_users(file_path):
+    """Load users from a JSON file.
+
+    Args:
+        file_path: Path to the JSON file.
+
+    Returns:
+        A list of user dictionaries.
+    """
+    with open(file_path, "r", encoding="utf-8") as file:
+        return json.load(file)
 
 
-filtered_by_age = filter_by_age(users, 30)
+def filter_users_by_age(users, minimum_age):
+    """Return users who are at least the given minimum age.
 
-print("Users filtered by age:")
-for user in filtered_by_age:
-    print(user)
+    Args:
+        users: A list of user dictionaries.
+        minimum_age: The minimum age a user must have.
 
-filtered_by_email = filter_by_email(users, "anna@example.com")
+    Returns:
+        A list of filtered user dictionaries.
+    """
+    return [
+        user
+        for user in users
+        if user.get("age", 0) >= minimum_age
+    ]
 
-print("\nUsers filtered by email:")
-for user in filtered_by_email:
-    print(user)
+
+def print_users(users):
+    """Print users line by line.
+
+    Args:
+        users: A list of user dictionaries.
+    """
+    for user in users:
+        print(user)
+
+
+def main():
+    """Run the user filtering program."""
+    users = load_users(USERS_FILE)
+    filtered_users = filter_users_by_age(users, MINIMUM_AGE)
+    print_users(filtered_users)
+
+
+if __name__ == "__main__":
+    main()
