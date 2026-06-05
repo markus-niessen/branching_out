@@ -1,16 +1,23 @@
-"""Filter users from a JSON file by age and email."""
+"""Filter users from a JSON file by name, age, and email."""
 
 import json
 
 USERS_FILE = "users.json"
-MINIMUM_AGE = 30
-EMAIL_DOMAIN = "example.com"
 
 
 def load_users(file_path):
     """Load users from a JSON file."""
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
+
+
+def filter_users_by_name(users, name):
+    """Return users with the given name."""
+    return [
+        user
+        for user in users
+        if user.get("name", "").lower() == name.lower()
+    ]
 
 
 def filter_users_by_age(users, minimum_age):
@@ -38,16 +45,28 @@ def print_users(users):
 
 
 def main():
-    """Run the user filtering program."""
+    """Ask the user for a filter type and print matching users."""
     users = load_users(USERS_FILE)
 
-    filtered_by_age = filter_users_by_age(users, MINIMUM_AGE)
-    print("Users filtered by age:")
-    print_users(filtered_by_age)
+    filter_type = input("Filter by name, age, or email: ").lower()
 
-    filtered_by_email = filter_users_by_email(users, EMAIL_DOMAIN)
-    print("\nUsers filtered by email:")
-    print_users(filtered_by_email)
+    if filter_type == "name":
+        name = input("Enter name: ")
+        filtered_users = filter_users_by_name(users, name)
+
+    elif filter_type == "age":
+        minimum_age = int(input("Enter minimum age: "))
+        filtered_users = filter_users_by_age(users, minimum_age)
+
+    elif filter_type == "email":
+        email_domain = input("Enter email domain: ")
+        filtered_users = filter_users_by_email(users, email_domain)
+
+    else:
+        print("Invalid filter type.")
+        return
+
+    print_users(filtered_users)
 
 
 if __name__ == "__main__":
